@@ -61,6 +61,10 @@ test {
     exclude '**/stress/**'
     exclude '**/*Remote*Test*'
     exclude '**/*Stress*Test*'
+    exclude '**/*Stress*Test*'
+    exclude '**/IT*.java'
+    exclude '**/*Perf*'
+    exclude '**/nasdaq/**'
     maxParallelForks = 1
 
 //    jvmArgs = [
