@@ -21,8 +21,6 @@ import exchange.core2.core.utils.ReflectionUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
 
 @Slf4j
 public final class WaitSpinningHelper {
@@ -36,10 +34,7 @@ public final class WaitSpinningHelper {
     // blocking mode, using same locking objects that Disruptor operates with
     private final boolean block;
     private final BlockingWaitStrategy blockingDisruptorWaitStrategy;
-    private final Lock lock;
-    private final Condition processorNotifyCondition;
-    // next Disruptor release will have mutex (to avoid allocations)
-    // private final Object mutex;
+    private final Object mutex;
 
     public <T> WaitSpinningHelper(RingBuffer<T> ringBuffer, SequenceBarrier sequenceBarrier, int spinLimit, CoreWaitStrategy waitStrategy) {
         this.sequenceBarrier = sequenceBarrier;
@@ -50,39 +45,25 @@ public final class WaitSpinningHelper {
         this.block = waitStrategy.isBlock();
         if (block) {
             this.blockingDisruptorWaitStrategy = ReflectionUtils.extractField(AbstractSequencer.class, (AbstractSequencer) sequencer, "waitStrategy");
-            this.lock = ReflectionUtils.extractField(BlockingWaitStrategy.class, blockingDisruptorWaitStrategy, "lock");
-            this.processorNotifyCondition = ReflectionUtils.extractField(BlockingWaitStrategy.class, blockingDisruptorWaitStrategy, "processorNotifyCondition");
+            this.mutex = ReflectionUtils.extractField(BlockingWaitStrategy.class, blockingDisruptorWaitStrategy, "mutex");
         } else {
             this.blockingDisruptorWaitStrategy = null;
-            this.lock = null;
-            this.processorNotifyCondition = null;
+            this.mutex = null;
         }
     }
 
     public long tryWaitFor(final long seq) throws AlertException, InterruptedException {
         sequenceBarrier.checkAlert();
-
         long spin = spinLimit;
         long availableSequence;
         while ((availableSequence = sequenceBarrier.getCursor()) < seq && spin > 0) {
             if (spin < yieldLimit && spin > 1) {
                 Thread.yield();
             } else if (block) {
-/*
+
                 synchronized (mutex) {
                     sequenceBarrier.checkAlert();
                     mutex.wait();
-                }
-*/
-                lock.lock();
-                try {
-                    sequenceBarrier.checkAlert();
-                    // lock only if sequence barrier did not progressed since last check
-                    if (availableSequence == sequenceBarrier.getCursor()) {
-                        processorNotifyCondition.await();
-                    }
-                } finally {
-                    lock.unlock();
                 }
             }
 
