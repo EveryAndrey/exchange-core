@@ -33,8 +33,8 @@ public class RunCukesDirectThroughputTests {
         @Override
         public void setEventPublisher(EventPublisher eventPublisher) {
             eventPublisher.registerHandlerFor(TestRunStarted.class,
-                event -> OrderStepdefs.testPerformanceConfiguration = PerformanceConfiguration.throughputPerformanceBuilder()
-                    .build());
+                event -> OrderStepdefs.testPerformanceConfiguration = PerformanceConfiguration
+                        .throughputPerformanceBuilder().build());
             eventPublisher.registerHandlerFor(TestRunFinished.class,
                 event -> OrderStepdefs.testPerformanceConfiguration = null);
         }

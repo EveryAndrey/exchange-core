@@ -5,11 +5,17 @@ plugins {
 }
 
 group = 'exchange.core2'
-version = '0.5.4-SNAPSHOT'
+version = '0.6.0-SNAPSHOT'
 description = 'High performance market exchange core'
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
 repositories {
     mavenCentral()
@@ -17,18 +23,18 @@ repositories {
 
 dependencies {
     // Основные зависимости
-    implementation 'net.java.dev.jna:jna-platform:5.11.0'
-    implementation 'net.java.dev.jna:jna:5.11.0'
+    implementation 'net.java.dev.jna:jna-platform:5.17.0'
+    implementation 'net.java.dev.jna:jna:5.17.0'
     implementation 'exchange.core2:collections:0.5.1'
-    implementation 'com.lmax:disruptor:3.4.2'
-    implementation 'org.slf4j:slf4j-api:1.7.36'
-    implementation 'net.openhft:affinity:3.2.2'
-    implementation 'net.openhft:chronicle-wire:2.19.1'
-    implementation 'org.agrona:agrona:1.15.1'
-    implementation 'org.eclipse.collections:eclipse-collections-api:11.0.0'
-    implementation 'org.eclipse.collections:eclipse-collections:11.0.0'
+    implementation 'com.lmax:disruptor:4.0.0'
+    implementation 'org.slf4j:slf4j-api:2.0.17'
+    implementation 'net.openhft:affinity:3.27ea1'
+    implementation 'net.openhft:chronicle-wire:2.27ea9'
+    implementation 'org.agrona:agrona:2.2.4'
+    implementation 'org.eclipse.collections:eclipse-collections-api:13.0.0'
+    implementation 'org.eclipse.collections:eclipse-collections:13.0.0'
     implementation 'org.lz4:lz4-java:1.8.0'
-    compileOnly 'org.jetbrains:annotations:24.0.1'
+    compileOnly 'org.jetbrains:annotations:26.0.2'
 
 
     // Тестовые зависимости
@@ -43,11 +49,12 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
     testImplementation 'org.mockito:mockito-core:4.5.1'
     testImplementation 'org.hamcrest:hamcrest-library:1.3'
-    testImplementation 'io.cucumber:cucumber-java8:7.2.3'
-    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.2.3'
-    testImplementation 'org.junit.platform:junit-platform-suite:1.8.2'
-    testImplementation 'io.cucumber:cucumber-picocontainer:7.2.3'
-    testCompileOnly 'org.jetbrains:annotations:24.0.1' // Для тестов
+    //testImplementation 'io.cucumber:cucumber-java8:7.2.3'
+    testImplementation 'io.cucumber:cucumber-java:7.27.2'
+    testImplementation 'io.cucumber:cucumber-junit-platform-engine:7.27.2'
+    testImplementation 'org.junit.platform:junit-platform-suite:1.13.4'
+    testImplementation 'io.cucumber:cucumber-picocontainer:7.27.2'
+    testCompileOnly 'org.jetbrains:annotations:26.0.2' // Для тестов
 }
 
 java {

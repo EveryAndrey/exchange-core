@@ -58,7 +58,7 @@ public final class ExchangeApi {
     // promises cache (TODO can be changed to queue)
     private final Map<Long, Consumer<OrderCommand>> promises = new ConcurrentHashMap<>();
 
-    public static final int LONGS_PER_MESSAGE = 5;
+    public static final int  LONGS_PER_MESSAGE = 5;
 
 
     public void processResult(final long seq, final OrderCommand cmd) {
@@ -271,7 +271,7 @@ public final class ExchangeApi {
                 query,
                 transferId,
                 cmd -> query.createResult(
-                        OrderBookEventsHelper.deserializeEvents(cmd).values().parallelStream().map(Wire::bytes)));
+                        OrderBookEventsHelper.deserializeEvents(cmd).values().stream().map(Wire::bytes)));
     }
 
     public void publishBinaryData(final ApiBinaryDataCommand apiCmd, final LongConsumer endSeqConsumer) {
